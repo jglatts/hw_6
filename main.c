@@ -75,7 +75,7 @@ void print_file(char file_name[]) {
     char buff[255];
 
     fp = fopen(file_name, "r");
-    if (fp) {
+    if (fp != NULL) {
         printf("\n");
         while ((c = getc(fp)) != EOF)
             putchar(c);
@@ -92,18 +92,21 @@ void print_file(char file_name[]) {
 /* Enter a new grade and name */
 void add_name_grade(char file_name[]) {
     FILE *fp;
-    int c;
+    int c, grade;
     // will have to be 2D array --> [50][100]
     char name[55];
 
     // add logic to enter more grades
+    // check w/ prof if mode should be 'a' or 'w'
     fp = fopen(file_name, "a");
-    printf("Enter  name: ");
+    printf("Enter  Name: ");
     scanf(" %[^\n]s", name);
+    printf("Enter  Grade: ");
+    scanf("%d", &grade);
     printf("\n");
 
     // Save data
-    fprintf(fp, "%s\n", name);
+    fprintf(fp, "\n%s\t%d\n", name, grade);
     fclose(fp);
 
 }

@@ -22,7 +22,7 @@ void store_content(char []);
 void option_menu(char [], char [][100], char[][100], int[], int);
 void print_file(char []);
 int add_name_grade(char [][100], char [][100], int []);
-void print_average(char []);
+void print_average(int [], int);
 void write_to_file(char [], char [][100], char [][100], int [], int);
 
 
@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
 }
 
 
-/* tore all info found in file */
+/* Store all info found in file */
 void store_content(char file_name[]) {
     FILE *fp;
     char first_name[30][100], last_name[30][100];
@@ -88,10 +88,11 @@ void option_menu(char file_name[], char first_name[][100], char last_name[][100]
             loop_size = add_name_grade(new_first_name, new_last_name, new_grades);
         }
         else if (check == 3) {
-            //print_average(file_name);
+            print_average(grades, size);
         }
         else if (check == 4) {
             write_to_file(file_name, new_first_name, new_last_name, new_grades, loop_size);
+            // add function() to update info
         }
     } while (check != 5);
     return;
@@ -145,7 +146,22 @@ void write_to_file(char file_name[], char new_first_name[][100], char new_last_n
     // only works if file has previously existed
     fp = fopen(file_name, "a");
     for (int i = 0; i < loop_size; ++i) {
-        fprintf(fp, "%s %s %d", new_first_name[i], new_last_name[i], new_grades[i]);
+        // change formating to add a newline at end
+        fprintf(fp, "%s %s %d\n", new_first_name[i], new_last_name[i], new_grades[i]);
     }
     fclose(fp);
+}
+
+
+/* Print the average grade of the values in file */
+void print_average(int grades[], int size)  {
+    int sum = 0;
+    int avrg;
+
+    for (int i = 0; i < sum; ++i) {
+            sum += grades[i];
+    }
+    avrg = sum / size;
+    printf("\n\nAverage grade is: %d\n\n", avrg);
+
 }

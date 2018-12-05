@@ -20,7 +20,7 @@ Due Date: 6 December 2018
 /* Function Prototypes */
 void store_content(char []);
 void option_menu(char [], char [][100], char[][100], int[], int);
-void print_file(char [][100], char [][100], int [], int);
+void print_file(char []);
 int add_name_grade(char [][100], char [][100], int []);
 void print_average(char []);
 void write_to_file(char [], char [][100], char [][100], int [], int);
@@ -82,8 +82,7 @@ void option_menu(char file_name[], char first_name[][100], char last_name[][100]
         printf("\n5. Exit Program\n --> ");
         scanf("%d", &check);
         if (check == 1) {
-            // add logic to update list after the save option is hit
-            print_file(first_name, last_name, grades, size);
+            print_file(file_name);
         }
         else if (check == 2) {
             loop_size = add_name_grade(new_first_name, new_last_name, new_grades);
@@ -102,17 +101,20 @@ void option_menu(char file_name[], char first_name[][100], char last_name[][100]
 
 
 /* Print all names and grades, display error if file is empty */
-void print_file(char first_name[][100], char last_name[][100], int grades[], int size) {
-    int i;
+void print_file(char file_name[]) {
+    FILE *fp;
 
-    // not displaying all content
-    if (grades[0] != NULL) {
-        for (i = 0; i < size; ++i) {
-            printf("\n%s %s %d\n", first_name[i], last_name[i], grades[i]);
+    fp = fopen(file_name, "r");
+    if (fp != NULL) {
+        char fname[30], lname[30];
+        int grade;
+        printf("\n\n");
+        while (fscanf(fp, "%s %s %d", fname, lname, &grade) != EOF) {
+            printf("%s %s --> %d\n", fname, lname, grade);
         }
     }
     else {
-        printf("\nEmpty File\n");
+        printf("\nEmpty File...\n");
     }
 }
 
@@ -141,7 +143,7 @@ void write_to_file(char file_name[], char new_first_name[][100], char new_last_n
     FILE *fp;
 
     // only works if file has previously existed
-    fp = fopen(file_name, "w");
+    fp = fopen(file_name, "a");
     for (int i = 0; i < loop_size; ++i) {
         fprintf(fp, "%s %s %d", new_first_name[i], new_last_name[i], new_grades[i]);
     }

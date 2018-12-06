@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
 void store_content(char file_name[]) {
     FILE *fp;
     char first_name[100][30], last_name[100][30];
-    int grades[100], idx=0, grade_size=0;
+    int grades[100], idx = 0, grade_size = 0;
 
     fp = fopen(file_name, "r");
     if (fp == NULL) {

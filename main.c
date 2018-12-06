@@ -5,11 +5,11 @@ Author: John Glatts
 TA: Shi Kai Fang
 Due Date: 6 December 2018
 
-=========================================
- Very Hacky
- Fix and practice file operations
- Add another file read in print_file()
- =========================================
+ ===========================================================
+ - Fix and practice file operations
+ - Add another file read in print_file()
+ - Correct the grades[index] that is causing problems
+ ===========================================================
 
 */
 #include <stdio.h>
@@ -19,11 +19,11 @@ Due Date: 6 December 2018
 
 /* Function Prototypes */
 void store_content(char []);
-void option_menu(char [], char [][100], char[][100], int[], int);
+void option_menu(char [], char [][30], char[][30], int[], int);
 void print_file(char []);
-int add_name_grade(char [][100], char [][100], int []);
+int add_name_grade(char [][30], char [][30], int []);
 void print_average(int [], int);
-void write_to_file(char [], char [][100], char [][100], int [], int);
+void write_to_file(char [], char [][30], char [][30], int [], int);
 
 
 int main(int argc, char const *argv[])
@@ -45,36 +45,43 @@ int main(int argc, char const *argv[])
 /* Store all info found in file */
 void store_content(char file_name[]) {
     FILE *fp;
-    char first_name[30][100], last_name[30][100];
-    int grades[100], idx=0, size=0;
+    char first_name[100][30], last_name[100][30];
+    char eof_check;
+    int grades[100], idx=0, grade_size=0;
 
     fp = fopen(file_name, "r");
     if (fp == NULL) {
         printf("%s does not exist\n", file_name);
-        option_menu(file_name, first_name, last_name, grades, size);
     }
     else {
-        while (fscanf(fp, "%s %s %d", first_name[0], last_name[0], &grades[0]) != EOF) {
+        // stores last value only, replaces other values with zeros
+        // add new check for EOF
+        while (!feof(fp)) {
             fscanf(fp, "%s %s %d", first_name[idx], last_name[idx], &grades[idx]);
             idx++;
-            size++;
         }
-        option_menu(file_name, first_name, last_name, grades, size);
     }
+    grade_size = (sizeof(grades) / sizeof(grades[0]));
+    printf("Size of array: %d --- Idx: %d", grade_size, idx);
+    for (int i = 0; i < idx - 1; ++i) {
+        printf("\n%d\n", grades[i]);
+    }
+    option_menu(file_name, first_name, last_name, grades, idx);
     fclose(fp);
 }
 
 
 /* Display menu and call appropriate functions */
-void option_menu(char file_name[], char first_name[][100], char last_name[][100], int grades[], int size) {
+void option_menu(char file_name[], char first_name[][30], char last_name[][30], int grades[], int size) {
     int check, loop_size;
-    char new_first_name[30][100], new_last_name[30][100];
+    char new_first_name[100][30], new_last_name[100][30];
     int new_grades[100];
 
     do {
-        printf("__________________________________________________\n");
-        printf("\n\t\tOptions...");
-        printf("\n__________________________________________________\n");
+        printf("\n");
+        printf("***************************\n");
+        printf("\tOptions");
+        printf("\n***************************\n");
         printf("\n1. Print all names and grades");
         printf("\n2. Add new name and grade");
         printf("\n3. Print Average");
@@ -85,19 +92,21 @@ void option_menu(char file_name[], char first_name[][100], char last_name[][100]
             print_file(file_name);
         }
         else if (check == 2) {
+            // change back to void
             loop_size = add_name_grade(new_first_name, new_last_name, new_grades);
         }
         else if (check == 3) {
             print_average(grades, size);
         }
         else if (check == 4) {
-            write_to_file(file_name, new_first_name, new_last_name, new_grades, loop_size);
             // add function() to update info
+            // add printf() that displays it's being saved
+            write_to_file(file_name, new_first_name, new_last_name, new_grades, loop_size);
+            store_content(file_name);
         }
     } while (check != 5);
     return;
     // save info and exit program
-
 }
 
 
@@ -121,7 +130,7 @@ void print_file(char file_name[]) {
 
 
 /* Enter a new grade and name */
-int add_name_grade(char new_first_name[][100], char new_last_name[][100], int new_grades[]) {
+int add_name_grade(char new_first_name[][30], char new_last_name[][30], int new_grades[]) {
     int loop_size;
 
     printf("\n\nEnter number of new students\n--> ");
@@ -140,7 +149,7 @@ int add_name_grade(char new_first_name[][100], char new_last_name[][100], int ne
 
 
 /* Save the new info to the file */
-void write_to_file(char file_name[], char new_first_name[][100], char new_last_name[][100], int new_grades[], int loop_size) {
+void write_to_file(char file_name[], char new_first_name[][30], char new_last_name[][30], int new_grades[], int loop_size) {
     FILE *fp;
 
     // only works if file has previously existed
@@ -156,12 +165,15 @@ void write_to_file(char file_name[], char new_first_name[][100], char new_last_n
 /* Print the average grade of the values in file */
 void print_average(int grades[], int size)  {
     int sum = 0;
-    int avrg;
+    int avrg = 0;
 
-    for (int i = 0; i < sum; ++i) {
-            sum += grades[i];
+    // not iterating, get correct size
+    for (int i = 0; i < size - 1; ++i) {
+        printf("\nIteration #%d -> %d", i, grades[i]);
+        sum += grades[i];
     }
-    avrg = sum / size;
+    printf("\n");
+    avrg = sum / (size - 1);
     printf("\n\nAverage grade is: %d\n\n", avrg);
-
 }
+

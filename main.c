@@ -54,8 +54,7 @@ void store_content(char file_name[]) {
         printf("%s does not exist\n", file_name);
     }
     else {
-        // stores last value only, replaces other values with zeros
-        // add new check for EOF
+        // check for EOF
         while (!feof(fp)) {
             fscanf(fp, "%s %s %d", first_name[idx], last_name[idx], &grades[idx]);
             idx++;

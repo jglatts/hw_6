@@ -81,7 +81,7 @@ void option_menu(char file_name[], char first_name[][30], char last_name[][30], 
         printf("\n");
         printf("***************************\n");
         printf("\tOptions");
-        printf("\n***************************\n");
+        printf("\n***************************");
         printf("\n1. Print all names and grades");
         printf("\n2. Add new name and grade");
         printf("\n3. Print Average");
@@ -105,8 +105,7 @@ void option_menu(char file_name[], char first_name[][30], char last_name[][30], 
             store_content(file_name);
         }
     } while (check != 5);
-    return;
-    // save info and exit program
+            printf("\n\nLeaving Program\nThank you for using!\n");
 }
 
 
@@ -135,16 +134,22 @@ int add_name_grade(char new_first_name[][30], char new_last_name[][30], int new_
 
     printf("\n\nEnter number of new students\n--> ");
     scanf("%d", &loop_size);
-    for (int i = 0; i < loop_size; ++i) {
-        // easier to write to file
-        printf("\nEnter student first name\n --> ");
-        scanf("%s", new_first_name[i]);
-        printf("\nEnter student last name\n --> ");
-        scanf("%s", new_last_name[i]);
-        printf("\nEnter grade for %s\n --> ", new_first_name[i]);
-        scanf("%d", &new_grades[i]);
+    if (loop_size <= 100) {
+        for (int i = 0; i < loop_size; ++i) {
+            // easier to write to file
+            printf("\nEnter student first name\n --> ");
+            scanf("%s", new_first_name[i]);
+            printf("\nEnter student last name\n --> ");
+            scanf("%s", new_last_name[i]);
+            printf("\nEnter grade for %s\n --> ", new_first_name[i]);
+            scanf("%d", &new_grades[i]);
+        }
+        return loop_size;
     }
-    return loop_size;
+    else {
+        printf("\n\nThis program can only store 100 students\n\n");
+        return 0;
+    }
 }
 
 
@@ -171,6 +176,7 @@ void print_average(int grades[], int size)  {
     for (int i = 0; i < size - 1; ++i) {
         printf("\nIteration #%d -> %d", i, grades[i]);
         sum += grades[i];
+        printf("\nCurrent Sum --> %d", sum);
     }
     printf("\n");
     avrg = sum / (size - 1);
